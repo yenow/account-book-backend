@@ -1,9 +1,11 @@
-package com.ysy.accountbook.global.common.domain;
+package com.ysy.accountbook.domain.base_entity;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,22 +21,24 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public abstract class BaseEntity {
     @Comment("생성날짜")
     @CreatedDate
-    private LocalDateTime createdDate;
+    @Column(nullable = false)
+    private LocalDateTime creationDate;
     @Comment("수정날짜")
     @LastModifiedDate
-    private LocalDateTime updatedDate;
-    @Comment("삭제날짜")
-    @Column
-    private LocalDateTime deletedDate;
+    private LocalDateTime modificationDate;
+    @Comment("삭제여부")
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean isDelete;
 
-    @Comment("생성자")
-    @CreatedBy
-    @Column(updatable = false)
-    private Long createdUserId;
-    @Comment("수정자")
-    @LastModifiedBy
-    private Long updatedUserId;
+//    @Comment("생성자")
+//    @CreatedBy
+//    @Column(updatable = false)
+//    private Long createdUserId;
+//    @Comment("수정자")
+//    @LastModifiedBy
+//    private Long updatedUserId;
 }

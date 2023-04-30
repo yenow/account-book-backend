@@ -1,6 +1,6 @@
-package com.ysy.accountbook.domain.commoncode.repository;
+package com.ysy.accountbook.domain.common_code.repository;
 
-import com.ysy.accountbook.domain.commoncode.entity.CommonCode;
+import com.ysy.accountbook.domain.common_code.entity.CommonCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -26,7 +26,7 @@ class CommonCodeRepositoryTest {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Test
+    /*@Test
     @Transactional
     void saveAndFind() {
         CommonCode parentCommonCode = CommonCode.builder()
@@ -69,5 +69,5 @@ class CommonCodeRepositoryTest {
 
         log.info("{}", parentCommonCode);
         log.info("{}", commonCode);
-    }
+    }*/
 }

@@ -25,10 +25,6 @@ public class UserSaveResponseDto {
     static public UserSaveResponseDto toDto(User user) {
         return UserSaveResponseDto.builder()
                 .email(user.getEmail())
-                .nickname(user.getNickname())
-                .birthDay(user.getBirthDay())
-                .gender(user.getGender())
-                .password(user.getPassword())
                 .build();
     }
 }

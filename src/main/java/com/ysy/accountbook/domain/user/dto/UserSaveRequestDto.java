@@ -24,10 +24,6 @@ public class UserSaveRequestDto {
     public User toEntity() {
         return User.builder()
                 .email(email)
-                .nickname(nickname)
-                .birthDay(birthDay)
-                .gender(gender)
-                .password(password)
                 .build();
     }
 }

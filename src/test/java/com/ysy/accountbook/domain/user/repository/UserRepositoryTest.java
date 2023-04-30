@@ -29,13 +29,10 @@ class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
+//    @Transactional
     void saveUser() {
         User user = User.builder()
-                .nickname("TestNickname")
-                .birthDay("19941129")
                 .email("test@google.com")
-                .gender(Gender.man)
                 .build();
 
         User saveUser = userRepository.save(user);
