@@ -1,8 +1,7 @@
 package com.ysy.accountbook.domain.trade.service;
 
+import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.repository.AccountRepository;
-import com.ysy.accountbook.domain.item.entity.Item;
-import com.ysy.accountbook.domain.item.repository.ItemRepository;
 import com.ysy.accountbook.domain.trade.entity.Trade;
 import com.ysy.accountbook.domain.trade.repository.TradeRepository;
 import com.ysy.accountbook.domain.trade_detail.entity.DebitAndCredit;
@@ -33,18 +32,16 @@ class TradeServiceTest {
     private TradeDetailRepository tradeDetailRepository;
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private ItemRepository itemRepository;
 
     @Test
     void registerTrade() {
         User user = userRepository.findById(1L).orElse(new User());
 
         Trade trade = new Trade();
-        Item item = itemRepository.findById(1L).orElseThrow();
+        Account account = accountRepository.findAccountByAccountName("현금").orElseThrow();
 
         TradeDetail tradeDetail = new TradeDetail(
-                trade, item, DebitAndCredit.credit, 100000L, ""
+                trade, account, DebitAndCredit.credit, 100000L, ""
         );
         tradeDetailRepository.save(tradeDetail);
     }

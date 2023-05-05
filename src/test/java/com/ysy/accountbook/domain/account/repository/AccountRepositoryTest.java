@@ -2,7 +2,6 @@ package com.ysy.accountbook.domain.account.repository;
 
 import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.entity.AccountType;
-import com.ysy.accountbook.domain.item.repository.ItemRepository;
 import com.ysy.accountbook.domain.user.entity.User;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

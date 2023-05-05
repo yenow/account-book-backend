@@ -3,7 +3,6 @@ package com.ysy.accountbook.domain.trade_detail.entity;
 import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.entity.AccountType;
 import com.ysy.accountbook.domain.base_entity.BaseEntity;
-import com.ysy.accountbook.domain.item.entity.Item;
 import com.ysy.accountbook.domain.trade.entity.Trade;
 import com.ysy.accountbook.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -33,8 +32,8 @@ public class TradeDetail extends BaseEntity {
     @JoinColumn(name = "trade_id")
     private Trade trade;
     @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Comment("차변/대변")
     @Column(length = 10, columnDefinition = "varchar(10)", nullable = false)
@@ -50,9 +49,9 @@ public class TradeDetail extends BaseEntity {
     /**
      * Constructor
      */
-    public TradeDetail(Trade trade, Item item, DebitAndCredit debitAndCredit, Long amount, String memo) {
+    public TradeDetail(Trade trade, Account account, DebitAndCredit debitAndCredit, Long amount, String memo) {
         this.trade = trade;
-        this.item = item;
+        this.account = account;
         this.debitAndCredit = debitAndCredit;
         this.amount = amount;
         this.memo = memo;

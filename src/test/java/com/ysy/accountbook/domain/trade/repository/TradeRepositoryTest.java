@@ -1,8 +1,6 @@
 package com.ysy.accountbook.domain.trade.repository;
 
 import com.ysy.accountbook.domain.account.repository.AccountRepository;
-import com.ysy.accountbook.domain.item.entity.Item;
-import com.ysy.accountbook.domain.item.repository.ItemRepository;
 import com.ysy.accountbook.domain.trade.entity.Trade;
 import com.ysy.accountbook.domain.trade_date.entity.TradeDate;
 import com.ysy.accountbook.domain.trade_detail.repository.TradeDetailRepository;
@@ -31,12 +29,10 @@ class TradeRepositoryTest {
     private TradeDetailRepository tradeDetailRepository;
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private ItemRepository itemRepository;
 
     @Test
     void registerTrade() {
-        Item item = itemRepository.findItemByItemName("현금").orElseThrow();
+//        Item item = accountRepository.findItemByItemName("현금").orElseThrow();
         User user = userRepository.findUserByEmail("test@google.com").orElseThrow();
         TradeDate tradeDate = new TradeDate("20230303");
 

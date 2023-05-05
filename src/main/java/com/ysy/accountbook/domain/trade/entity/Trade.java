@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -31,8 +32,12 @@ public class Trade extends BaseEntity {
     @JoinColumn(name = "trade_date")
     private TradeDate tradeDate;
 
-    public Trade(User user, TradeDate tradeDate) {
-        this.user = user;
-        this.tradeDate = tradeDate;
-    }
+    @Comment("거래타입")
+    @Column(length = 10, nullable = false)
+    private String tradeType;
+
+    @Comment("내용")
+    @Column(length = 3000, nullable = false)
+    private String content;
+
 }
