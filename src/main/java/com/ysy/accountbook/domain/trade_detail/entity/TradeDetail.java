@@ -5,10 +5,8 @@ import com.ysy.accountbook.domain.account.entity.AccountType;
 import com.ysy.accountbook.domain.base_entity.BaseEntity;
 import com.ysy.accountbook.domain.trade.entity.Trade;
 import com.ysy.accountbook.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -21,6 +19,8 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @ToString(callSuper = true)
 public class TradeDetail extends BaseEntity {
 
@@ -38,22 +38,13 @@ public class TradeDetail extends BaseEntity {
     @Comment("차변/대변")
     @Column(length = 10, columnDefinition = "varchar(10)", nullable = false)
     @Enumerated(EnumType.STRING)
+    @NonNull
     private DebitAndCredit debitAndCredit;
     @Comment("금액")
     @Column(nullable = false)
+    @NonNull
     private Long amount;
     @Comment("적요(메모)")
     @Column(columnDefinition = "varchar(200) default ''")
     private String memo;
-
-    /**
-     * Constructor
-     */
-    public TradeDetail(Trade trade, Account account, DebitAndCredit debitAndCredit, Long amount, String memo) {
-        this.trade = trade;
-        this.account = account;
-        this.debitAndCredit = debitAndCredit;
-        this.amount = amount;
-        this.memo = memo;
-    }
 }

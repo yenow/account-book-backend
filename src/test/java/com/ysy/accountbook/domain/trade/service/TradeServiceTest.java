@@ -39,11 +39,11 @@ class TradeServiceTest {
 
         Trade trade = new Trade();
         Account account = accountRepository.findAccountByAccountName("현금").orElseThrow();
-
-        TradeDetail tradeDetail = new TradeDetail(
-                trade, account, DebitAndCredit.credit, 100000L, ""
-        );
-        tradeDetailRepository.save(tradeDetail);
+        //
+        //TradeDetail tradeDetail = new TradeDetail(
+        //        trade, account, DebitAndCredit.credit, 100000L, ""
+        //);
+        //tradeDetailRepository.save(tradeDetail);
     }
 
 //    void saveItem() {

@@ -31,33 +31,48 @@ class AccountRepositoryTest {
     @Test
     void account() {
         Account account = Account.builder()
-                .accountType(AccountType.asset)
-                .accountName("현금성 자산")
-                .creationDate(LocalDateTime.now())
-                .build();
-        log.info("account:{}",account);
+                                 .accountType(AccountType.asset)
+                                 .accountName("현금성 자산")
+                                 .creationDate(LocalDateTime.now())
+                                 .build();
+        log.info("account:{}", account);
     }
 
     @Test
     void saveAccount() {
-        User user = userRepository.findUserByEmail("test@google.com").orElseThrow();
+        User user = userRepository.findUserByEmail("test@google.com")
+                                  .orElseThrow();
 
-//        Account account = new Account(user,null, AccountType.asset,"현금성 자산");
+        //        Account account = new Account(user,null, AccountType.asset,"현금성 자산");
         Account account = Account.builder()
-                .accountType(AccountType.asset)
-                .accountName("현금성 자산")
-                .creationDate(LocalDateTime.now())
-                .build();
+                                 .accountType(AccountType.asset)
+                                 .accountName("현금성 자산")
+                                 .creationDate(LocalDateTime.now())
+                                 .build();
         Account save = accountRepository.save(account);
 
-        Account findAccount = accountRepository.findAccountByAccountName(account.getAccountName()).orElseThrow();
-//        log.info("findAccount : {}",findAccount);
+        Account findAccount = accountRepository.findAccountByAccountName(account.getAccountName())
+                                               .orElseThrow();
+        //        log.info("findAccount : {}",findAccount);
     }
 
     @Test
     @Transactional
     void findAccountName() {
-        Account findAccount = accountRepository.findAccountByAccountName("테스트계정").orElseThrow();
+        Account findAccount = accountRepository.findAccountByAccountName("테스트계정")
+                                               .orElseThrow();
         System.out.println("findAccount = " + findAccount);
+    }
+
+    @Test
+    @Transactional
+    void findAccountByUserAndAccountId() {
+        User user = User.builder()
+                        .userId(1L)
+                        .build();
+
+        Account account = accountRepository.findAccountByUserAndAccountId(user, 1L)
+                                           .orElseThrow();
+        System.out.println("account = " + account);
     }
 }

@@ -3,6 +3,7 @@ package com.ysy.accountbook.domain.user.dto;
 import com.ysy.accountbook.domain.user.entity.Gender;
 import com.ysy.accountbook.domain.user.entity.User;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class UserSaveResponseDto {
     @NotNull
     private String email;

@@ -1,8 +1,7 @@
-package com.ysy.accountbook.domain.trade_acount.entity;
+package com.ysy.accountbook.domain.trade_bank_acount.entity;
 
 import com.ysy.accountbook.domain.bank_account.entity.BankAccount;
 import com.ysy.accountbook.domain.base_entity.BaseEntity;
-import com.ysy.accountbook.domain.common_code.entity.CommonCode;
 import com.ysy.accountbook.domain.trade_detail.entity.TradeDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,14 +21,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class TradeAccount extends BaseEntity {
+public class TradeBankAccount extends BaseEntity {
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_detail_id")
-    private TradeDetail tradeDetail;
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_account_id")
-    private BankAccount bankAccount;
+    @EmbeddedId
+    private TradeBankPK tradeBankPK;
+
+    //@Id
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "trade_detail_id")
+    //private TradeDetail tradeDetail;
+    //@Id
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "bank_account_id")
+    //private BankAccount bankAccount;
 }

@@ -4,6 +4,7 @@ import com.ysy.accountbook.domain.base_entity.BaseEntity;
 import javax.persistence.*;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @ToString(callSuper = true)
 public class User extends BaseEntity {
 

@@ -30,9 +30,6 @@ public class BankAccount extends BaseEntity {
     private Long bankAccountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_detail_id")
-    private TradeDetail tradeDetail;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_code")
     private CommonCode bankCode;
 

@@ -10,6 +10,10 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+
+/**
+ * 계정 엔티티
+ */
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -31,23 +35,16 @@ public class Account extends BaseEntity {
     @JoinColumn(name = "parent_account_id")
     private Account parentAccountId;
 
-
     @Comment("계정타입(자산,부채,수익,비용,자본)")
     @Enumerated(value = EnumType.STRING)
     @Column(length = 8, nullable = false)
+    @NonNull
     private AccountType accountType;    // 수정불가
-//    @Comment("계정코드")
-//    @Column(length = 50,nullable = false)
-//    private String accountCode;
     @Comment("계정과목")
-    @Column(length = 100,nullable = false)
+    @Column(length = 100, nullable = false)
+    @NonNull
     private String accountName;
-
-    public Account(User user, Account parentAccountId, AccountType accountType, String accountName) {
-        this.user = user;
-        this.parentAccountId = parentAccountId;
-        this.accountType = accountType;
-//        this.accountCode = accountCode;
-        this.accountName = accountName;
-    }
+    @Comment("설명")
+    @Column(length = 3000)
+    private String description;
 }

@@ -4,12 +4,13 @@ import com.ysy.accountbook.domain.user.entity.Gender;
 import com.ysy.accountbook.domain.user.entity.User;
 import javax.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class UserSaveRequestDto {
     @NotNull
     private String email;
