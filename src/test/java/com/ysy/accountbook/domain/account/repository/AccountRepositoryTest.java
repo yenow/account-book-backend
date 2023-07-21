@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,5 +75,18 @@ class AccountRepositoryTest {
         Account account = accountRepository.findAccountByUserAndAccountId(user, 1L)
                                            .orElseThrow();
         System.out.println("account = " + account);
+    }
+
+    @Test
+    @Transactional
+    void findAccountByUser() {
+        User user = User.builder()
+                        .userId(3L)
+                        .build();
+
+        List<Account> accounts = accountRepository.findAccountByUser(user)
+                                                  .orElseThrow();
+        System.out.println("accounts = " + accounts);
+
     }
 }

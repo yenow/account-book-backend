@@ -1,9 +1,6 @@
 package com.ysy.accountbook.domain.trade.entity;
 
-import com.ysy.accountbook.domain.trade_date.entity.TradeDate;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TradeTest {
 

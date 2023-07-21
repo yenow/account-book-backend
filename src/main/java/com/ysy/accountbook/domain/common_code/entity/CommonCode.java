@@ -1,8 +1,8 @@
 package com.ysy.accountbook.domain.common_code.entity;
 
-import com.ysy.accountbook.domain.base_entity.BaseEntity;
+import com.ysy.accountbook.domain.base.BaseEntity;
 import javax.persistence.*;
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,7 +10,6 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

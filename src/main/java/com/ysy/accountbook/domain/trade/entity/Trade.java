@@ -1,7 +1,6 @@
 package com.ysy.accountbook.domain.trade.entity;
 
-import com.ysy.accountbook.domain.base_entity.BaseEntity;
-import com.ysy.accountbook.domain.trade_date.entity.TradeDate;
+import com.ysy.accountbook.domain.base.BaseEntity;
 import com.ysy.accountbook.domain.user.entity.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -10,7 +9,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DynamicInsert
@@ -34,9 +34,21 @@ public class Trade extends BaseEntity {
     @JoinColumn(name = "trade_date")
     @NonNull
     private TradeDate tradeDate;
+    @OneToMany(mappedBy = "trade")
+    private List<TradeDetail> tradeDetails = new ArrayList<>();
 
+    @Comment("거래유형")
+    @Column(length = 10, nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private TradeType tradeType;
     @Comment("내용")
-    @Column(length = 3000, nullable = false)
+    @Column(length = 200)
     @NonNull
     private String content;
+    @Comment("메모")
+    @Column(length = 3000)
+    @NonNull
+    private String memo;
+
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+Logged in as : <span id="user" th:text="${userName}"></span>
+<a href="/logout" class="btn btn-info active" role="button">Logout</a>
+
+</body>
+<!--<script>-->
+<!--    window.opener.postMessage({-->
+<!--        'flutter-web-auth': window.location.href-->
+<!--    }, window.location.origin);-->
+<!--    window.close();-->
+<!--</script>-->
+</html>

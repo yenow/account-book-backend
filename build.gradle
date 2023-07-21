@@ -16,6 +16,7 @@ repositories {
 dependencies {
     //region spring-starter
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     //endregion
@@ -37,11 +38,24 @@ dependencies {
     //endregion
 
     //region log
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.0'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
     //endregion
 
     //region et
     implementation 'org.apache.commons:commons-lang3'
+    //endregion
+
+    //region security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+    implementation 'org.springframework.security:spring-security-test'
+    //endregion
+
+    //region jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
     //endregion
 
     annotationProcessor "javax.persistence:javax.persistence-api"

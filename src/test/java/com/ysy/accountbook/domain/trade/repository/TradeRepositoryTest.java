@@ -2,8 +2,7 @@ package com.ysy.accountbook.domain.trade.repository;
 
 import com.ysy.accountbook.domain.account.repository.AccountRepository;
 import com.ysy.accountbook.domain.trade.entity.Trade;
-import com.ysy.accountbook.domain.trade_date.entity.TradeDate;
-import com.ysy.accountbook.domain.trade_detail.repository.TradeDetailRepository;
+import com.ysy.accountbook.domain.trade.entity.TradeDate;
 import com.ysy.accountbook.domain.user.entity.User;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +11,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest

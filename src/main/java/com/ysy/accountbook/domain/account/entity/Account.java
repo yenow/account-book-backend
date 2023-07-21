@@ -1,6 +1,6 @@
 package com.ysy.accountbook.domain.account.entity;
 
-import com.ysy.accountbook.domain.base_entity.BaseEntity;
+import com.ysy.accountbook.domain.base.BaseEntity;
 import com.ysy.accountbook.domain.user.entity.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -33,13 +33,13 @@ public class Account extends BaseEntity {
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_account_id")
-    private Account parentAccountId;
+    private Account parentAccount;
 
     @Comment("계정타입(자산,부채,수익,비용,자본)")
     @Enumerated(value = EnumType.STRING)
     @Column(length = 8, nullable = false)
     @NonNull
-    private AccountType accountType;    // 수정불가
+    private AccountType accountType;
     @Comment("계정과목")
     @Column(length = 100, nullable = false)
     @NonNull
@@ -47,4 +47,10 @@ public class Account extends BaseEntity {
     @Comment("설명")
     @Column(length = 3000)
     private String description;
+    @Comment("트리구조 깊이")
+    @Column(length = 2)
+    private Integer level;
+    @Comment("leaf 여부")
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean isLeaf;
 }

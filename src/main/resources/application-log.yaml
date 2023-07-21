@@ -1,0 +1,12 @@
+logging:
+  level:
+    root: debug
+    org:
+      hibernate:
+        type: trace
+      springframework:
+        web:
+          client: debug
+    com:
+      ysy:
+        accountbook: debug

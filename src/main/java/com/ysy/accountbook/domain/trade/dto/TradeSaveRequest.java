@@ -1,9 +1,7 @@
 package com.ysy.accountbook.domain.trade.dto;
 
+import com.ysy.accountbook.domain.trade.entity.TradeType;
 import lombok.*;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -11,12 +9,25 @@ import java.util.List;
 @Builder
 @ToString
 public class TradeSaveRequest {
-    @NotNull
-    private String tradeDate;
-    @NotNull
+    private Long tradeId;
+    @NonNull
     private Long userId;
-    @NotNull
+    @NonNull
+    private String tradeDate;
+    @NonNull
+    private TradeType tradeType;
+    private String typeName;
+    @NonNull
+    private Long amount;
+
+    private Long incomeOrExpenseAccountId;
+    private String incomeOrExpenseAccountName;
+    private Long assetAccountId;
+    private String assetAccountName;
+    private Long depositAccountId;
+    private String depositAccountName;
+    private Long withdrawAccountId;
+    private String withdrawAccountName;
     private String content;
-    private List<DebitSaveRequest> debitSaveRequests;
-    private List<CreditSaveRequest> creditSaveRequests;
+    private String memo;
 }
