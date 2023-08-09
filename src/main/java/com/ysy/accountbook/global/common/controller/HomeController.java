@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HomeController {
 
-    @GetMapping("/login")
-    public String login() {
-        log.debug("login");
-
-        return "login";
-    }
+    //@GetMapping("/login")
+    //public String login() {
+    //    log.debug("login");
+    //
+    //    return "login";
+    //}
 }

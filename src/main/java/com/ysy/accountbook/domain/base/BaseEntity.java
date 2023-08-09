@@ -30,7 +30,7 @@ public abstract class BaseEntity {
     private LocalDateTime modificationDate;
     @Comment("삭제여부")
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
-    private boolean isDelete;
+    private Boolean isDelete;
 
 //    @Comment("생성자")
 //    @CreatedBy

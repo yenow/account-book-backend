@@ -1,9 +1,7 @@
 logging:
   level:
-    root: debug
+    root: info
     org:
-      hibernate:
-        type: trace
       springframework:
         web:
           client: debug

@@ -1,5 +1,7 @@
 package com.ysy.accountbook.global.common.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,17 @@ import java.util.Random;
 public class Utility {
     private final int leftLimit = 97; // letter 'a'
     private final int rightLimit = 122; // letter 'z'
+
+    /**
+     * 정렬된 ToString 출력
+     *
+     * @param object
+     * @return
+     */
+    public static String prettyToString(Object object) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        return gson.toJson(object);
+    }
 
     /**
      * check empty string
@@ -50,5 +63,9 @@ public class Utility {
         log.debug("simpleName : {}", simpleName);
 
         return result;
+    }
+
+    static public String getEncodedPassword(String password) {
+        return ("{bcrypt}" + password);
     }
 }

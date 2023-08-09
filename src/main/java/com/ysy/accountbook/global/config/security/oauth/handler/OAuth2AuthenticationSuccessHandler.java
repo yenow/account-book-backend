@@ -66,7 +66,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 생성
         String jwtAccessToken = tokenProvider.createAccessToken(authentication);
         log.debug("create jwtAccessToken = {}, targetUrl = {}", jwtAccessToken, targetUrl);
-        String jwtRefreshToken = tokenProvider.createRefreshToken(authentication, response);
+        String jwtRefreshToken = tokenProvider.createRefreshToken(authentication);
 
         // URL 문자열 생성
         return UriComponentsBuilder.fromUriString(targetUrl)

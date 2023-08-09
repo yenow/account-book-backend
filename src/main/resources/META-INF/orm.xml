@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" version="2.2">
+
+
+    <named-native-query name="account.findAssetAmountList" result-set-mapping="account.assetDto">
+        <query>
+            <![CDATA[
+                with recursive account_cte as (
+                                              select account_id
+                                                   , parent_account_id
+                                                   , account_type
+                                                   , account_name
+                                                   , cast(account_name as char(500)) as account_name_path
+                                                   , level
+                                                   , cast(account_id as char(500))   as path
+                                              from account
+                                              where user_id = :userId
+                                                and account_type = 'asset'
+                                                and parent_account_id is null
+                                              union all
+                                              select a.account_id
+                                                   , a.parent_account_id
+                                                   , a.account_type
+                                                   , a.account_name
+                                                   , concat(account_cte.account_name_path, ' > ', a.account_name) as account_name_path
+                                                   , a.level
+                                                   , concat(account_cte.path, ',', a.account_id)                  as path
+                                              from account a
+                                                       join account_cte on a.user_id = :userId and a.parent_account_id = account_cte.account_id
+                                              where a.level <= 2
+                                              )
+                select ac.account_id                                                        as accountId
+                     , ac.parent_account_id                                                 as parentAccountId
+                     , ac.account_name                                                      as accountName
+                     , ac.account_name_path                                                 as accountNamePath
+                     , ac.level                                                             as level
+                     , if(ac.level = 1, 'group', 'asset')                                   as assetType
+                     , if(ac.level = 1, ifnull(s2.sum_amount, 0), ifnull(s1.sum_amount, 0)) as sumAmount
+                from account_cte ac
+                         left join (
+                                   select a.account_id
+                                        , sum(if(td.debit_and_credit = 'debit', td.amount, 0))                                                    as asset_plus_amount
+                                        , sum(if(td.debit_and_credit = 'credit', td.amount, 0))                                                   as asset_minus_amount
+                                        , sum(if(td.debit_and_credit = 'debit', td.amount, 0) - if(td.debit_and_credit = 'credit', td.amount, 0)) as sum_amount
+                                   from trade t
+                                            join trade_detail td on t.trade_id = td.trade_id
+                                            join account a on td.account_id = a.account_id
+                                            left join trade_bank_account tba on td.trade_detail_id = tba.trade_detail_id
+                                            left join bank_account ba on tba.bank_account_id = ba.bank_account_id
+                                   where t.user_id = :userId
+                                     and a.account_type = 'asset'
+                                     and a.level = 2
+                                   group by a.account_id
+                                   ) s1 on s1.account_id = ac.account_id
+                         left join (
+                                   select a.parent_account_id
+                                        , sum(if(td.debit_and_credit = 'debit', td.amount, 0))                                                    as asset_plus_amount
+                                        , sum(if(td.debit_and_credit = 'credit', td.amount, 0))                                                   as asset_minus_amount
+                                        , sum(if(td.debit_and_credit = 'debit', td.amount, 0) - if(td.debit_and_credit = 'credit', td.amount, 0)) as sum_amount
+                                   from trade t
+                                            join trade_detail td on t.trade_id = td.trade_id
+                                            join account a on td.account_id = a.account_id
+                                            left join trade_bank_account tba on td.trade_detail_id = tba.trade_detail_id
+                                            left join bank_account ba on tba.bank_account_id = ba.bank_account_id
+                                   where t.user_id = :userId
+                                     and a.account_type = 'asset'
+                                     and a.level = 2
+                                   group by a.parent_account_id
+                                   ) s2 on s2.parent_account_id = ac.account_id
+                group by ac.account_id, ac.path
+                order by ac.account_id, ac.path
+        ]]>
+        </query>
+    </named-native-query>
+
+    <sql-result-set-mapping name="account.assetDto">
+        <constructor-result target-class="com.ysy.accountbook.domain.account.dto.AssetDto">
+            <column name="accountId" class="java.lang.Long"/>
+            <column name="parentAccountId" class="java.lang.Long"/>
+            <column name="accountName" class="java.lang.String"/>
+            <column name="accountNamePath" class="java.lang.String"/>
+            <column name="sumAmount" class="java.lang.Long"/>
+            <column name="level" class="java.lang.Long"/>
+            <column name="assetType" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+</entity-mappings>

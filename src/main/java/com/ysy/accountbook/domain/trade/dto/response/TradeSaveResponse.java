@@ -1,4 +1,4 @@
-package com.ysy.accountbook.domain.trade.dto;
+package com.ysy.accountbook.domain.trade.dto.response;
 
 import com.ysy.accountbook.domain.trade.entity.TradeType;
 import lombok.*;

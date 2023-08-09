@@ -1,9 +1,11 @@
 package com.ysy.accountbook.domain.account.repository;
 
+import com.ysy.accountbook.domain.account.dto.AssetDto;
 import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.entity.AccountType;
 import com.ysy.accountbook.domain.user.entity.User;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
+import com.ysy.accountbook.global.common.util.Utility;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -29,38 +29,15 @@ class AccountRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    void account() {
-        Account account = Account.builder()
-                                 .accountType(AccountType.asset)
-                                 .accountName("현금성 자산")
-                                 .creationDate(LocalDateTime.now())
-                                 .build();
-        log.info("account:{}", account);
-    }
-
-    @Test
-    void saveAccount() {
-        User user = userRepository.findUserByEmail("test@google.com")
-                                  .orElseThrow();
-
-        //        Account account = new Account(user,null, AccountType.asset,"현금성 자산");
-        Account account = Account.builder()
-                                 .accountType(AccountType.asset)
-                                 .accountName("현금성 자산")
-                                 .creationDate(LocalDateTime.now())
-                                 .build();
-        Account save = accountRepository.save(account);
-
-        Account findAccount = accountRepository.findAccountByAccountName(account.getAccountName())
-                                               .orElseThrow();
-        //        log.info("findAccount : {}",findAccount);
-    }
-
+    /**
+     * 계정 조회 테스트
+     */
     @Test
     @Transactional
     void findAccountName() {
-        Account findAccount = accountRepository.findAccountByAccountName("테스트계정")
+        User user = userRepository.findById(1L)
+                                  .orElseThrow();
+        Account findAccount = accountRepository.findAccountByUserAndAccountName(user, "현금")
                                                .orElseThrow();
         System.out.println("findAccount = " + findAccount);
     }
@@ -72,11 +49,14 @@ class AccountRepositoryTest {
                         .userId(1L)
                         .build();
 
-        Account account = accountRepository.findAccountByUserAndAccountId(user, 1L)
+        Account account = accountRepository.findAccountByUserAndAccountId(user, 364L)
                                            .orElseThrow();
         System.out.println("account = " + account);
     }
 
+    /**
+     * 사용자의 모든 계정 조회
+     */
     @Test
     @Transactional
     void findAccountByUser() {
@@ -88,5 +68,36 @@ class AccountRepositoryTest {
                                                   .orElseThrow();
         System.out.println("accounts = " + accounts);
 
+    }
+
+    /**
+     * 자산 목록 조회
+     */
+    @Test
+    @Transactional
+    void findAssetList() {
+        List<AssetDto> assetList = accountRepository.findAssetAmountList(1L);
+        log.info("assetList :\n {}", Utility.prettyToString(assetList));
+    }
+
+    /**
+     * 계정 저장 테스트
+     */
+    //@Test
+    @Transactional
+    void saveAccount() {
+        User user = userRepository.findUserByEmail("phantom_ysy@naver.com")
+                                  .orElseThrow();
+
+        Account account = Account.builder()
+                                 .accountType(AccountType.asset)
+                                 .accountName("현금성 자산")
+                                 .creationDate(LocalDateTime.now())
+                                 .build();
+        Account save = accountRepository.save(account);
+
+        Account findAccount = accountRepository.findAccountByUserAndAccountName(user, account.getAccountName())
+                                               .orElseThrow();
+        log.info("findAccount : {}", findAccount);
     }
 }

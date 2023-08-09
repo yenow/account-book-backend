@@ -6,3 +6,4 @@ spring:
       - oauth
       - log
       - ssl
+      - p6spy

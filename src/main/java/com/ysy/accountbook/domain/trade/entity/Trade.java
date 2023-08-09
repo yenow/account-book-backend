@@ -34,7 +34,8 @@ public class Trade extends BaseEntity {
     @JoinColumn(name = "trade_date")
     @NonNull
     private TradeDate tradeDate;
-    @OneToMany(mappedBy = "trade")
+    @Builder.Default
+    @OneToMany(mappedBy = "trade", fetch = FetchType.LAZY)
     private List<TradeDetail> tradeDetails = new ArrayList<>();
 
     @Comment("거래유형")

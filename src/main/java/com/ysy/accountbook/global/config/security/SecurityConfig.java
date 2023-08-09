@@ -11,11 +11,15 @@ import com.ysy.accountbook.global.config.security.oauth.handler.OAuth2Authentica
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -51,13 +55,10 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);    // session off
 
         // uri 권한 설정
-        http.authorizeRequests()
-            .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**","/login/**")
-            .permitAll()
-            .antMatchers("/api/v1/**")
-            .hasRole(Role.USER.name())
-            .anyRequest()
-            .authenticated();
+        urlAuthSetting(http);
+
+        // 필터 설정
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // oauth 설정
         // oAuthSetting(http);
@@ -66,9 +67,26 @@ public class SecurityConfig {
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 401
             .accessDeniedHandler(jwtAccessDeniedHandler);   // 403
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
+    }
+
+    /**
+     * URL 권한 설정
+     *
+     * @param http
+     * @throws Exception
+     */
+    private void urlAuthSetting(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.GET)
+                .permitAll()
+            .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/login/**", "/test/**", "/autoLogin", "/logout", "/login")
+                .permitAll()
+            .antMatchers("/api/v1/**")
+                .hasRole(Role.USER.name())
+            .anyRequest()
+                .authenticated();
+
     }
 
     @Bean
@@ -107,22 +125,23 @@ public class SecurityConfig {
 
     @Deprecated
     void oAuthSetting(HttpSecurity http) throws Exception {
-        http.formLogin().disable()
-                .logout()
-                .logoutSuccessUrl("/")
+        http.formLogin()
+            .disable()
+            .logout()
+            .logoutSuccessUrl("/")
             .and()
-                .oauth2Login()  // OAuth 2 로그인 기능에 대한 여러 설정의 진입점
-                    .authorizationEndpoint()    // 프론트엔드에서 백엔드로 소셜로그인 요청을 보내는 URI
-                    .baseUri("/oauth2/authorization/*") // Default URL= '/oauth2/authorization/{provider}'
-                    .authorizationRequestRepository(cookieAuthorizationRequestRepository)   // Authorization 과정에서 기본으로 Session을 사용하지만 Cookie로 변경하기 위해 설정
-                .and()
-                    .redirectionEndpoint()  // Authorization 과정이 끝나면 Authorization Code와 함께 리다이렉트할 URI
-                    .baseUri("/login/oauth2/code/*")    // Default URL='/login/oauth2/code/{provider}'
-                .and()
-                    .userInfoEndpoint() // OAuth 2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당
-                    .userService(customOAuth2UserService)  // 소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의 구현체를 등록
+            .oauth2Login()  // OAuth 2 로그인 기능에 대한 여러 설정의 진입점
+            .authorizationEndpoint()    // 프론트엔드에서 백엔드로 소셜로그인 요청을 보내는 URI
+            .baseUri("/oauth2/authorization/*") // Default URL= '/oauth2/authorization/{provider}'
+            .authorizationRequestRepository(cookieAuthorizationRequestRepository)   // Authorization 과정에서 기본으로 Session을 사용하지만 Cookie로 변경하기 위해 설정
             .and()
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler);
+            .redirectionEndpoint()  // Authorization 과정이 끝나면 Authorization Code와 함께 리다이렉트할 URI
+            .baseUri("/login/oauth2/code/*")    // Default URL='/login/oauth2/code/{provider}'
+            .and()
+            .userInfoEndpoint() // OAuth 2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당
+            .userService(customOAuth2UserService)  // 소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의 구현체를 등록
+            .and()
+            .successHandler(authenticationSuccessHandler)
+            .failureHandler(authenticationFailureHandler);
     }
 }

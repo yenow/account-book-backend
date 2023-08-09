@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"trade","account"})
 public class TradeDetail extends BaseEntity {
 
     @Id

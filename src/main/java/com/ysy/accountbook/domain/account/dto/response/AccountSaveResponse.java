@@ -1,4 +1,4 @@
-package com.ysy.accountbook.domain.account.dto;
+package com.ysy.accountbook.domain.account.dto.response;
 
 import com.ysy.accountbook.domain.account.entity.AssetType;
 import lombok.AllArgsConstructor;

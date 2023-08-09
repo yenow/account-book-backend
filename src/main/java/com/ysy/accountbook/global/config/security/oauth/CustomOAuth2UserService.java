@@ -3,7 +3,7 @@ package com.ysy.accountbook.global.config.security.oauth;
 
 import com.ysy.accountbook.domain.user.entity.User;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
-import com.ysy.accountbook.global.config.security.oauth.dto.CustomUserDetails;
+import com.ysy.accountbook.global.config.security.CustomUserDetails;
 import com.ysy.accountbook.global.config.security.oauth.dto.OAuthAttributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         User user = saveOrUpdate(attributes);
 
-        return CustomUserDetails.create(user, oAuth2User.getAttributes());
+        return null;
     }
 
     /**

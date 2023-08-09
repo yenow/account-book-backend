@@ -1,11 +1,11 @@
-package com.ysy.accountbook.global.common.converter;
+package com.ysy.accountbook.domain.trade.converter;
 
-import com.ysy.accountbook.domain.trade.dto.TradeSaveResponse;
+import com.ysy.accountbook.domain.trade.dto.response.TradeSaveResponse;
 import com.ysy.accountbook.domain.trade.entity.DebitAndCredit;
 import com.ysy.accountbook.domain.trade.entity.Trade;
 import com.ysy.accountbook.domain.trade.entity.TradeDetail;
-import com.ysy.accountbook.domain.trade.entity.TradeType;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,16 +15,21 @@ public class TradeConverter implements Converter<Trade, TradeSaveResponse> {
     @Override
     public TradeSaveResponse convert(Trade trade) {
 
-        List<TradeDetail> trades = trade.getTradeDetails();
+        List<TradeDetail> tradeDetails = trade.getTradeDetails();
 
-        TradeDetail debit = trades.stream()
+        TradeDetail debit = tradeDetails.stream()
+                                        .filter(tradeDetail -> tradeDetail.getDebitAndCredit() == DebitAndCredit.debit)
+                                        .collect(Collectors.toList())
+                                        .get(0);
+        TradeDetail credit = tradeDetails.stream()
+                                         .filter(tradeDetail -> tradeDetail.getDebitAndCredit() == DebitAndCredit.credit)
+                                         .collect(Collectors.toList())
+                                         .get(0);
+
+        Long amount = tradeDetails.stream()
                                   .filter(tradeDetail -> tradeDetail.getDebitAndCredit() == DebitAndCredit.debit)
-                                  .collect(Collectors.toList())
-                                  .get(0);
-        TradeDetail credit = trades.stream()
-                                   .filter(tradeDetail -> tradeDetail.getDebitAndCredit() == DebitAndCredit.credit)
-                                   .collect(Collectors.toList())
-                                   .get(0);
+                                  .mapToLong(TradeDetail::getAmount)
+                                  .sum();
 
         Long incomeOrExpenseAccountId = null;
         String incomeOrExpenseAccountName = "";
@@ -77,6 +82,7 @@ public class TradeConverter implements Converter<Trade, TradeSaveResponse> {
                                 .tradeDate(trade.getTradeDate()
                                                 .getTradeDate())
                                 .tradeType(trade.getTradeType())
+                                .amount(amount)
                                 .incomeOrExpenseAccountId(incomeOrExpenseAccountId)
                                 .incomeOrExpenseAccountName(incomeOrExpenseAccountName)
                                 .assetAccountId(assetAccountId)

@@ -37,7 +37,7 @@ public class Account extends BaseEntity {
 
     @Comment("계정타입(자산,부채,수익,비용,자본)")
     @Enumerated(value = EnumType.STRING)
-    @Column(length = 8, nullable = false)
+    @Column(length = 10, nullable = false)
     @NonNull
     private AccountType accountType;
     @Comment("계정과목")

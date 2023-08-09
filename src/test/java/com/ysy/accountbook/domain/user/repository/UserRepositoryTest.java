@@ -25,25 +25,28 @@ class UserRepositoryTest {
     @Test
     void findUsers() {
         List<User> all = userRepository.findAll();
-        log.info("all : {}",all);
+        log.info("all : {}", all);
     }
 
     @Test
-//    @Transactional
+    @Transactional
     void saveUser() {
         User user = User.builder()
-                .email("test@google.com")
-                .build();
+                        .email("nalraysy3@gmail.com")
+                        .build();
+        //
+        //User saveUser = userRepository.save(user);
+        //log.info("saveUser : {}", saveUser);
+        //
+        //Optional<User> optionalUser = userRepository.findById(saveUser.getUserId());
+        //User findUser = optionalUser.orElse(User.builder().build());
+        //log.info("findUser : {}", findUser);
+        //
+        //User findUserTest = userRepository.findByIdForTest(saveUser.getUserId());
+        //log.info("findUserTest : {}", findUserTest);
 
-        User saveUser = userRepository.save(user);
-        log.info("saveUser : {}", saveUser);
-
-        Optional<User> optionalUser = userRepository.findById(saveUser.getUserId());
-        User findUser = optionalUser.orElse(User.builder().build());
-        log.info("findUser : {}", findUser);
-
-        User findUserTest = userRepository.findByIdForTest(saveUser.getUserId());
-        log.info("findUserTest : {}", findUserTest);
-
+        User findUser = userRepository.findUserByEmailAndIsDelete(user.getEmail(), false)
+                                      .orElseThrow();
+        log.info("user : {}", user);
     }
 }

@@ -30,4 +30,8 @@ public class TradeSaveRequest {
     private String withdrawAccountName;
     private String content;
     private String memo;
+
+    public void setTradeDate(String tradeDate) {
+        this.tradeDate = tradeDate;
+    }
 }

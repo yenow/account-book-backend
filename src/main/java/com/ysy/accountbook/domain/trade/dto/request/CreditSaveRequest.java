@@ -1,4 +1,4 @@
-package com.ysy.accountbook.domain.trade.dto;
+package com.ysy.accountbook.domain.trade.dto.request;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 @ToString
-public class DebitSaveRequest {
+public class CreditSaveRequest {
     @NotNull
     private Long accountId;
     @NotNull

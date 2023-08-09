@@ -1,13 +1,17 @@
 package com.ysy.accountbook.domain.account.service;
 
 import com.ysy.accountbook.domain.account.dto.*;
+import com.ysy.accountbook.domain.account.dto.request.AccountRequest;
+import com.ysy.accountbook.domain.account.dto.request.AccountSaveRequest;
+import com.ysy.accountbook.domain.account.dto.response.AccountSaveResponse;
 import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.entity.AccountType;
 import com.ysy.accountbook.domain.account.entity.AssetType;
 import com.ysy.accountbook.domain.account.exception.AccountNotFoundException;
 import com.ysy.accountbook.domain.account.repository.AccountRepository;
-import com.ysy.accountbook.domain.trade.service.TradeSaveDomainService;
+import com.ysy.accountbook.domain.trade.domain_service.TradeSaveDomainService;
 import com.ysy.accountbook.domain.user.entity.User;
+import com.ysy.accountbook.domain.user.exception.UserNotFoundException;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,30 +36,12 @@ public class AccountService {
     /**
      * 계정 리스트 (카테고리 리스트)
      *
-     * @param accountRequest
+     * @param email
      * @return
      */
     @Transactional
-    public List<AccountDto> findAccountsByUserId(AccountRequest accountRequest) {
-        User user = userRepository.findById(accountRequest.getUserId())
-                                  .orElseThrow();
-
-        return accountRepository.findAccountByUser(user)
-                                .orElseThrow()
-                                .stream()
-                                .map(AccountDto::new)
-                                .collect(Collectors.toList());
-    }
-
-    /**
-     * 계정 리스트 (카테고리 리스트)
-     *
-     * @param accountRequest
-     * @return
-     */
-    @Transactional
-    public AccountsByTypeDto findAccountByUserAndAccountType(AccountRequest accountRequest) {
-        User user = userRepository.findById(accountRequest.getUserId())
+    public AccountsByTypeDto findAccountOrUser(String email) {
+        User user = userRepository.findUserByEmailAndIsDelete(email, false)
                                   .orElseThrow();
 
         List<AccountDto> incomeAccounts = accountRepository.findAccountByUserAndAccountType(user, AccountType.income)
@@ -90,7 +76,10 @@ public class AccountService {
      * @return
      */
     @Transactional
-    public AccountSaveResponse saveAssetAccount(AccountSaveRequest asr) {
+    public AccountSaveResponse saveAssetAccount(AccountSaveRequest asr,
+                                                String email) {
+        User user = userRepository.findUserByEmailAndIsDelete(email, false)
+                                  .orElseThrow(UserNotFoundException::new);
 
         Account account;
         switch (asr.getAssetType()) {
@@ -106,7 +95,7 @@ public class AccountService {
                                                         .level(2)
                                                         .build());
 
-                saveIncome(asr, account);
+                saveIncome(asr, account, user);
                 break;
             case group:
                 account = accountRepository.save(Account.builder()
@@ -140,12 +129,51 @@ public class AccountService {
      * @param asr
      * @param account
      */
-    private void saveIncome(AccountSaveRequest asr, Account account) {
-        Account incomeAccount = accountRepository.findAccountByAccountName("기타")
+    private void saveIncome(AccountSaveRequest asr,
+                            Account account,
+                            User user) {
+
+        Account incomeAccount = accountRepository.findAccountByUserAndAccountName(user, "기타")
                                                  .orElseThrow(AccountNotFoundException::new);
 
-        tradeSaveDomainService.saveIncome(asr.getUserId(), conversion.convert(LocalDate.now(), String.class), asr.getAmount(),
-                incomeAccount.getAccountId(), account.getAccountId(), "", ""
-                                         );
+        tradeSaveDomainService.saveIncome(user.getUserId(),
+                                          conversion.convert(LocalDate.now(), String.class),
+                                          asr.getAmount(),
+                                          incomeAccount.getAccountId(),
+                                          account.getAccountId(),
+                                          "",
+                                          "");
+    }
+
+    /**
+     * 자산 계정별 보유 금액 리스트
+     *
+     * @param email
+     * @return
+     */
+    public List<AssetDto> findAssetAmountList(String email) {
+        User user = userRepository.findUserByEmailAndIsDelete(email, false)
+                                  .orElseThrow(UserNotFoundException::new);
+
+        return accountRepository.findAssetAmountList(user.getUserId());
+    }
+
+    /**
+     * 계정 리스트 (카테고리 리스트)
+     *
+     * @param accountRequest
+     * @return
+     */
+    @Transactional
+    @Deprecated
+    public List<AccountDto> findAccountsByUserId(AccountRequest accountRequest) {
+        User user = userRepository.findById(accountRequest.getUserId())
+                                  .orElseThrow();
+
+        return accountRepository.findAccountByUser(user)
+                                .orElseThrow()
+                                .stream()
+                                .map(AccountDto::new)
+                                .collect(Collectors.toList());
     }
 }

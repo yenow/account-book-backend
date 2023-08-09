@@ -1,7 +1,8 @@
 package com.ysy.accountbook.global.config.security.jwt;
 
+import com.ysy.accountbook.domain.user.entity.Password;
 import com.ysy.accountbook.domain.user.repository.UserRepository;
-import com.ysy.accountbook.global.config.security.oauth.dto.CustomUserDetails;
+import com.ysy.accountbook.global.config.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,29 +34,35 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final String SECRET_KEY;
-    private final String COOKIE_REFRESH_TOKEN_KEY;
+    //private final String COOKIE_REFRESH_TOKEN_KEY;
     private final Long ACCESS_TOKEN_EXPIRE_LENGTH;
     private final Long REFRESH_TOKEN_EXPIRE_LENGTH;
     private final String AUTHORITIES_KEY = "role";
     private final String ISSUER;
     private final Key key;
-    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    //private final UserRepository userRepository;
 
-    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, @Value("${jwt.cookie-key}") String cookieKey,
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey,
+                            @Value("${jwt.cookie-key}") String cookieKey,
                             @Value("${jwt.access-token-validity-in-second}") long accessTokenExpireLength,
-                            @Value("${jwt.refresh-token-validity-in-second}") long refreshTokenExpireLength, @Value("${jwt.issuer}") String issuer,
-                            UserRepository userRepository) {
+                            @Value("${jwt.refresh-token-validity-in-second}") long refreshTokenExpireLength,
+                            @Value("${jwt.issuer}") String issuer,
+                            UserRepository userRepository,
+                            PasswordEncoder passwordEncoder) {
 
         this.SECRET_KEY = Base64.getEncoder()
                                 .encodeToString(secretKey.getBytes());
-        this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
+        //this.COOKIE_REFRESH_TOKEN_KEY = cookieKey;
         this.ACCESS_TOKEN_EXPIRE_LENGTH = accessTokenExpireLength;
         this.REFRESH_TOKEN_EXPIRE_LENGTH = refreshTokenExpireLength;
         this.ISSUER = issuer;
-        this.userRepository = userRepository;
 
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+
+        this.passwordEncoder = passwordEncoder;
+        //this.userRepository = userRepository;
     }
 
     /**
@@ -69,18 +77,20 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        String userId = user.getName();
+        String email = userDetails.getUsername();
         String role = authentication.getAuthorities()
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                   .signWith(key, SignatureAlgorithm.HS256)
-                   .setSubject(userId)
-                   .claim(AUTHORITIES_KEY, role)
+                   .signWith(key,
+                             SignatureAlgorithm.HS256)
+                   .setSubject(email)
+                   .claim(AUTHORITIES_KEY,
+                          role)
                    .setIssuer(ISSUER)
                    .setIssuedAt(now)
                    .setExpiration(validity)
@@ -91,37 +101,27 @@ public class JwtTokenProvider {
      * 리프레쉬 토큰 생성
      *
      * @param authentication
-     * @param response
      */
-    public String createRefreshToken(Authentication authentication, HttpServletResponse response) {
+    public String createRefreshToken(Authentication authentication) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_LENGTH);
 
         String refreshToken = Jwts.builder()
-                                  .signWith(key, SignatureAlgorithm.HS256)
+                                  .signWith(key,
+                                            SignatureAlgorithm.HS256)
                                   .setIssuer(ISSUER)
                                   .setIssuedAt(now)
                                   .setExpiration(validity)
                                   .compact();
 
-        saveRefreshToken(authentication, refreshToken);
-
-        ResponseCookie cookie = ResponseCookie.from(COOKIE_REFRESH_TOKEN_KEY, refreshToken)
-                                              .httpOnly(true)
-                                              .secure(true)
-                                              .sameSite("Lax")
-                                              .maxAge(REFRESH_TOKEN_EXPIRE_LENGTH / 1000)
-                                              .path("/")
-                                              .build();
-
-        response.addHeader("Set-Cookie", cookie.toString());
+        saveRefreshToken(authentication,
+                         refreshToken);
         return refreshToken;
     }
 
-    private void saveRefreshToken(Authentication authentication, String refreshToken) {
+    private void saveRefreshToken(Authentication authentication,
+                                  String refreshToken) {
         CustomUserDetails userDetail = (CustomUserDetails) authentication.getPrincipal();
-        Long id = Long.valueOf(userDetail.getName());
-
         //userRepository.updateRefreshToken(id, refreshToken);
     }
 
@@ -135,9 +135,13 @@ public class JwtTokenProvider {
                                                                    .map(SimpleGrantedAuthority::new)
                                                                    .collect(Collectors.toList());
 
-        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), "", authorities);
+        CustomUserDetails principal = new CustomUserDetails(claims.getSubject(),
+                                                            passwordEncoder.encode(Password.PASSWORD),
+                                                            authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal,
+                                                       passwordEncoder.encode(Password.PASSWORD),
+                                                       authorities);
     }
 
     public Boolean validateToken(String token) {

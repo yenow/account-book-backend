@@ -1,4 +1,4 @@
-package com.ysy.accountbook.domain.account.dto;
+package com.ysy.accountbook.domain.account.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

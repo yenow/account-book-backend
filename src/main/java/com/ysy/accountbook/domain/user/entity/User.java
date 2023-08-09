@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @DynamicUpdate
@@ -23,14 +24,13 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<AccountCategory> accountCategory;
-//    @OneToMany(mappedBy = "user_id")
-//    private List<TradeDetail> incomeCategory;
-
+    @UniqueElements
     @Comment("이메일")
     @Column(length = 100)
     private String email;
+    @Comment("이름")
+    @Column(length = 100)
+    private String name;
 
     @Comment("권한")
     @Enumerated(EnumType.STRING)
@@ -46,10 +46,21 @@ public class User extends BaseEntity {
     @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
     private Boolean isActivated = true;
 
+    @Transient
+    private final String password = Password.PASSWORD;
+
     public User update(String name, String picture) {
-        //this.name = name;
+        this.name = name;
         //this.picture = picture;
         return this;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void logout() {
+        this.refreshToken = "";
     }
 
     public String getRoleKey() {

@@ -1,5 +1,6 @@
 package com.ysy.accountbook.domain.login.dto;
 
+import com.ysy.accountbook.domain.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,5 @@ public class LoginResponse {
     private String accessToken;
     @NotNull
     private String refreshToken;
+    private UserDto user;
 }

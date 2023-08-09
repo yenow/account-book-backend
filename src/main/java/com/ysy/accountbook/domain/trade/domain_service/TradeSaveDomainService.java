@@ -1,4 +1,4 @@
-package com.ysy.accountbook.domain.trade.service;
+package com.ysy.accountbook.domain.trade.domain_service;
 
 import com.ysy.accountbook.domain.account.entity.Account;
 import com.ysy.accountbook.domain.account.exception.AccountNotFoundException;
@@ -17,15 +17,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class TradeSaveDomainService {
-    private UserRepository userRepository;
-    private TradeRepository tradeRepository;
-    private TradeDetailRepository tradeDetailRepository;
-    private AccountRepository accountRepository;
+    final private UserRepository userRepository;
+    final private TradeRepository tradeRepository;
+    final private TradeDetailRepository tradeDetailRepository;
+    final private AccountRepository accountRepository;
 
 
     /**
@@ -40,7 +42,13 @@ public class TradeSaveDomainService {
      * @param memo             메모
      * @return
      */
-    public Trade saveExpense(Long userId, String tradeDate, Long amount, Long expenseAccountId, Long assetAccountId, String content, String memo) {
+    public Trade saveExpense(Long userId,
+                             String tradeDate,
+                             Long amount,
+                             Long expenseAccountId,
+                             Long assetAccountId,
+                             String content,
+                             String memo) {
         User user = userRepository.findById(userId)
                                   .orElseThrow(UserNotFoundException::new);
 
@@ -55,6 +63,7 @@ public class TradeSaveDomainService {
                                                                     .build())
                                                 .user(user)
                                                 .content(content)
+                                                .tradeDetails(new ArrayList<>())
                                                 .tradeType(TradeType.expense)
                                                 .memo(memo)
                                                 .build());
@@ -74,6 +83,10 @@ public class TradeSaveDomainService {
                                                                    .amount(amount)
                                                                    .build());
 
+        trade.getTradeDetails()
+             .add(debit);
+        trade.getTradeDetails()
+             .add(credit);
 
         return trade;
     }
@@ -90,7 +103,13 @@ public class TradeSaveDomainService {
      * @param memo            메모
      * @return
      */
-    public Trade saveIncome(Long userId, String tradeDate, Long amount, Long incomeAccountId, Long assetAccountId, String content, String memo) {
+    public Trade saveIncome(Long userId,
+                            String tradeDate,
+                            Long amount,
+                            Long incomeAccountId,
+                            Long assetAccountId,
+                            String content,
+                            String memo) {
         User user = userRepository.findById(userId)
                                   .orElseThrow(UserNotFoundException::new);
 
@@ -107,22 +126,27 @@ public class TradeSaveDomainService {
                                                 .user(user)
                                                 .content(content)
                                                 .tradeType(TradeType.income)
+                                                .tradeDetails(new ArrayList<>())
                                                 .memo(memo)
                                                 .build());
         // 차변 (쟈산 증가)
-        tradeDetailRepository.save(TradeDetail.builder()
-                                              .trade(trade)
-                                              .account(assetAccount)
-                                              .debitAndCredit(DebitAndCredit.debit)
-                                              .amount(amount)
-                                              .build());
+        TradeDetail debit = tradeDetailRepository.save(TradeDetail.builder()
+                                                                  .trade(trade)
+                                                                  .account(assetAccount)
+                                                                  .debitAndCredit(DebitAndCredit.debit)
+                                                                  .amount(amount)
+                                                                  .build());
         // 대변 (수입 증가)
-        tradeDetailRepository.save(TradeDetail.builder()
-                                              .trade(trade)
-                                              .account(incomeAccount)
-                                              .debitAndCredit(DebitAndCredit.credit)
-                                              .amount(amount)
-                                              .build());
+        TradeDetail credit = tradeDetailRepository.save(TradeDetail.builder()
+                                                                   .trade(trade)
+                                                                   .account(incomeAccount)
+                                                                   .debitAndCredit(DebitAndCredit.credit)
+                                                                   .amount(amount)
+                                                                   .build());
+        trade.getTradeDetails()
+             .add(debit);
+        trade.getTradeDetails()
+             .add(credit);
 
         return trade;
     }
@@ -139,7 +163,12 @@ public class TradeSaveDomainService {
      * @param memo              메모
      * @return
      */
-    public Trade saveTransfer(Long userId, String tradeDate, Long amount, Long depositAccountId, Long withdrawAccountId, String content,
+    public Trade saveTransfer(Long userId,
+                              String tradeDate,
+                              Long amount,
+                              Long depositAccountId,
+                              Long withdrawAccountId,
+                              String content,
                               String memo) {
         User user = userRepository.findById(userId)
                                   .orElseThrow(UserNotFoundException::new);
@@ -153,6 +182,7 @@ public class TradeSaveDomainService {
                                                 .tradeDate(TradeDate.builder()
                                                                     .tradeDate(tradeDate)
                                                                     .build())
+                                                .tradeDetails(new ArrayList<>())
                                                 .user(user)
                                                 .content(content)
                                                 .tradeType(TradeType.transfer)
@@ -160,19 +190,24 @@ public class TradeSaveDomainService {
                                                 .build());
 
         // 차변 (입금 자산 증가)
-        tradeDetailRepository.save(TradeDetail.builder()
-                                              .trade(trade)
-                                              .account(depositAssetAccount)
-                                              .debitAndCredit(DebitAndCredit.debit)
-                                              .amount(amount)
-                                              .build());
+        TradeDetail debit = tradeDetailRepository.save(TradeDetail.builder()
+                                                                  .trade(trade)
+                                                                  .account(depositAssetAccount)
+                                                                  .debitAndCredit(DebitAndCredit.debit)
+                                                                  .amount(amount)
+                                                                  .build());
         // 대변 (출금 자산 감소)
-        tradeDetailRepository.save(TradeDetail.builder()
-                                              .trade(trade)
-                                              .account(withdrawAssetAccount)
-                                              .debitAndCredit(DebitAndCredit.credit)
-                                              .amount(amount)
-                                              .build());
+        TradeDetail credit = tradeDetailRepository.save(TradeDetail.builder()
+                                                                   .trade(trade)
+                                                                   .account(withdrawAssetAccount)
+                                                                   .debitAndCredit(DebitAndCredit.credit)
+                                                                   .amount(amount)
+                                                                   .build());
+
+        trade.getTradeDetails()
+             .add(debit);
+        trade.getTradeDetails()
+             .add(credit);
 
         return trade;
     }

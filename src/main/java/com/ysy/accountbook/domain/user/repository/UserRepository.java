@@ -8,6 +8,7 @@ import java.util.stream.DoubleStream;
 
 public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
     Optional<User> findUserByEmail(String email);
+    Optional<User> findUserByEmailAndIsDelete(String email, boolean isDelete);
 
     Optional<User> findByEmail(String email);
 }
