@@ -1,5 +1,6 @@
 package com.ysy.accountbook.domain.account.dto.request;
 
+import com.ysy.accountbook.domain.account.entity.AccountType;
 import com.ysy.accountbook.domain.account.entity.AssetType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 public class AccountSaveRequest {
     private Long accountId;
     private String accountName;
+    private AccountType accountType;
     private Long parentAccountId;
     private String parentAccountName;
     private Long amount;

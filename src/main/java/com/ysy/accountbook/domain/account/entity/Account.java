@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 /**
@@ -53,4 +54,12 @@ public class Account extends BaseEntity {
     @Comment("leaf 여부")
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean isLeaf;
+    @Comment("계정 삭제 가능 여부")
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean canBeDeleted;
+
+    public void changeAccount(String accountName) {
+        this.accountName = accountName;
+        changeModificationDate(LocalDateTime.now());
+    }
 }

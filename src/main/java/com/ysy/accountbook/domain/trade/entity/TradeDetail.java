@@ -40,4 +40,9 @@ public class TradeDetail extends BaseEntity {
     @Column(nullable = false)
     @NonNull
     private Long amount;
+
+    public void deleteTradeDetail() {
+        delete();
+    }
+
 }

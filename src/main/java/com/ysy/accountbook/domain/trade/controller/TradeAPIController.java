@@ -4,7 +4,6 @@ import com.ysy.accountbook.domain.trade.dto.*;
 import com.ysy.accountbook.domain.trade.dto.request.ChartRequest;
 import com.ysy.accountbook.domain.trade.dto.response.ChartResponse;
 import com.ysy.accountbook.domain.trade.dto.response.TradeSaveResponse;
-import com.ysy.accountbook.domain.trade.service.ChartService;
 import com.ysy.accountbook.domain.trade.service.TradeService;
 import com.ysy.accountbook.global.common.dto.ResponseDto;
 import com.ysy.accountbook.global.common.dto.State;
@@ -26,21 +25,23 @@ import java.util.Map;
 public class TradeAPIController {
 
     final private TradeService tradeService;
-    final private ChartService chartService;
     final private SecurityUtil securityUtil;
 
     /**
-     * 가계부 등록
+     * 거래 등록 (가계부 등록)
      *
      * @param tradeSaveRequest
      * @return
      */
     @PostMapping("/save")
-    public ResponseDto<TradeSaveResponse> saveTrade(@RequestBody TradeSaveRequest tradeSaveRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseDto<TradeSaveResponse> saveTrade(@RequestBody TradeSaveRequest tradeSaveRequest,
+                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("{}", tradeSaveRequest);
         String email = userDetails.getUsername();
 
-        tradeSaveRequest.setTradeDate(tradeSaveRequest.getTradeDate().replace("-",""));
+        tradeSaveRequest.setTradeDate(tradeSaveRequest.getTradeDate()
+                                                      .replace("-", "")
+                                                      .replace(".", ""));
 
         TradeSaveResponse tradeSaveResponse = tradeService.saveTrade(tradeSaveRequest, email);
         return ResponseDto.<TradeSaveResponse>builder()
@@ -49,6 +50,27 @@ public class TradeAPIController {
                           .state(State.success)
                           .message("")
                           .data(tradeSaveResponse)
+                          .build();
+    }
+
+    /**
+     * 거래 삭제 (가계부 삭제)
+     *
+     * @param tradeId 거래 ID (가계부 ID)
+     * @return
+     */
+    @PostMapping("/delete")
+    public ResponseDto<String> deleteTrade(@RequestBody Long tradeId,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        String email = userDetails.getUsername();
+
+        tradeService.deleteTrade(tradeId, email);
+        return ResponseDto.<String>builder()
+                          .timestamp(LocalDateTime.now()
+                                                  .toString())
+                          .state(State.success)
+                          .message("")
+                          .data("Y")
                           .build();
     }
 
@@ -84,8 +106,7 @@ public class TradeAPIController {
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         String email = userDetails.getUsername();
 
-        ChartResponse chartData = chartService.findChartData(chartRequest, email);
-
+        ChartResponse chartData = tradeService.findChartData(chartRequest, email);
 
         return ResponseDto.<ChartResponse>builder()
                           .timestamp(LocalDateTime.now()

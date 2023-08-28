@@ -78,7 +78,7 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
         ChartDto chartDto = ChartDto.builder()
                                     .accountName("")
                                     .amount(0L)
-                                    .percent(1.0)
+                                    .percent(1.0F)
                                     .build();
         chartDtoList.add(chartDto);
         return Optional.ofNullable(chartDtoList);
@@ -106,8 +106,10 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
                                              account.accountName,
                                              tradeDetail.amount.sum()
                                                                .as("amount"),
-                                             Expressions.operation(Double.class, Ops.DIV, tradeDetail.amount.sum(), Expressions.asNumber(sumAmount))
-                                                        .as("percent")))
+                                             tradeDetail.amount.sum()
+                                                               .divide(sumAmount)
+                                                               .floatValue()
+                                                               .as("percent")))
                   .from(trade)
                   .innerJoin(trade.tradeDate, tradeDate)
                   .innerJoin(trade.user, user)
@@ -115,7 +117,8 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
                   .innerJoin(tradeDetail.account, account)
                   .where(user.userId.eq(userId)
                                     .and(tradeDate.tradeDate.startsWith(month))
-                                    .and(account.accountType.eq(accountType)))
+                                    .and(account.accountType.eq(accountType))
+                                    .and(tradeDetail.isDelete.eq(false)))
                   .groupBy(account.accountId)
                   .fetch();
     }
@@ -144,7 +147,8 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
                   .innerJoin(tradeDetail.account, account)
                   .where(user.userId.eq(userId)
                                     .and(tradeDate.tradeDate.startsWith(month))
-                                    .and(account.accountType.eq(accountType)))
+                                    .and(account.accountType.eq(accountType))
+                                    .and(trade.isDelete.eq(false)))
                   .fetchOne();
     }
 
@@ -232,7 +236,9 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
                   .innerJoin(trade.user, user)
                   .innerJoin(trade.tradeDetails, tradeDetail)
                   .innerJoin(tradeDetail.account, account)
-                  .where(trade.user.userId.eq(userId))
+                  .where(trade.user.userId.eq(userId)
+                                          .and(trade.isDelete.eq(false))
+                                          .and(tradeDetail.isDelete.eq(false)))
                   .groupBy(trade.tradeId)
                   .fetch();
     }

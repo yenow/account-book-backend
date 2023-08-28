@@ -21,8 +21,9 @@ public interface AccountRepository extends JpaRepository<Account, Long>, Account
     Optional<Account> findAccountByUserAndAccountId(User user,
                                                     Long accountId);
 
-    Optional<List<Account>> findAccountByUserAndAccountType(User user,
-                                                            @NonNull AccountType accountType);
+    Optional<List<Account>> findAccountByUserAndAccountTypeAndIsDelete(User user,
+                                                                       @NonNull AccountType accountType,
+                                                                       boolean isDelete);
 
     @Query(nativeQuery = true, name = "account.findAssetAmountList")
     List<AssetDto> findAssetAmountList(@Param("userId") Long userId);

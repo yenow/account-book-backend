@@ -21,6 +21,6 @@ public class ChartDto {
     private AccountType accountType;
     private String accountName;
     private Long amount;
-    private Double percent;
+    private Float percent;
 
 }

@@ -32,11 +32,20 @@ public abstract class BaseEntity {
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private Boolean isDelete;
 
-//    @Comment("생성자")
-//    @CreatedBy
-//    @Column(updatable = false)
-//    private Long createdUserId;
-//    @Comment("수정자")
-//    @LastModifiedBy
-//    private Long updatedUserId;
+    /**
+     * 수정날짜 변경
+     *
+     * @param modificationDate
+     */
+    public void changeModificationDate(LocalDateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+    /**
+     * 삭제
+     *
+     */
+    public void delete() {
+        this.modificationDate = LocalDateTime.now();
+        this.isDelete = true;
+    }
 }
