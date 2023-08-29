@@ -1,0 +1,43 @@
+version: "1"
+
+services:
+  database:
+    image:          mariadb:10.8.3
+    container_name: account_mariadb
+    ports:
+      - 3307:3306
+    volumes:
+      - ./database/conf.d:/etc/mysql/conf.d
+      - database_account:/var/lib/mysql
+    #      - ./database/initdb.d:/docker-entrypoint-initdb.d
+    env_file:       database/.env
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+#    restart:        always
+  application:
+    build:
+      context:    ../
+      dockerfile: ./docker/application/DockerFile # 기존에 설정해둔 DockerFile 을 지정히여 build 된 jar 파일을 container 에 올린다.
+    depends_on:
+      - database
+    ports:
+      - 8081:8080
+    container_name: account_application
+    env_file:       ./application/.env # 환경 설정(database 연결 및 profile 지정)
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+    restart:        always # 컨테이너 재실행
+
+volumes:
+  database_account:
+    external: true
+  application_account:
+    external: true
+
+
+networks:
+  backend:
