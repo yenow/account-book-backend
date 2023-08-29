@@ -1,3 +1,5 @@
+/src/main/resources/application-oauth.properties
+
 HELP.md
 .gradle
 build/
@@ -35,3 +37,21 @@ out/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/application-jwt.yaml
+/src/main/resources/application-local.yaml
+/src/main/resources/application-oauth.yaml
+/src/main/resources/application-ssl.yaml
+/keystore.p12
+
+### docker ###
+/docker/*
+
+!**/docker/application/DockerFile
+
+/docker/database/initdb.d
+/docker/database/data
+!**/docker/database/conf.d/my.cnf
+
+
+### .env ###
+**/.env
