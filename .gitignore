@@ -42,3 +42,16 @@ out/
 /src/main/resources/application-oauth.yaml
 /src/main/resources/application-ssl.yaml
 /keystore.p12
+
+### docker ###
+/docker/*
+
+!**/docker/application/DockerFile
+
+/docker/database/initdb.d
+/docker/database/data
+!**/docker/database/conf.d/my.cnf
+
+
+### .env ###
+**/.env
