@@ -80,8 +80,8 @@ public class TradeService {
                                                             tsr.getTradeDate(),
                                                             tsr.getTradeType(),
                                                             tsr.getAmount(),
-                                                            tsr.getIncomeOrExpenseAccountId(),
-                                                            tsr.getAssetAccountId(),
+                                                            tsr.getDepositAccountId(),
+                                                            tsr.getWithdrawAccountId(),
                                                             tsr.getContent(),
                                                             tsr.getMemo());
                 break;
