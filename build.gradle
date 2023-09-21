@@ -16,7 +16,7 @@ repositories {
 dependencies {
     //region spring-starter
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+        //implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     //endregion
@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.mybatis.mybatis-spring'
+        //implementation 'org.mybatis.mybatis-spring'
     //endregion
 
     //region queryDsl
@@ -36,6 +36,7 @@ dependencies {
     //region lombok
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok' //추가
     //endregion
 
     //region log
