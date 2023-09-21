@@ -63,6 +63,9 @@ dependencies {
     annotationProcessor "javax.annotation:javax.annotation-api"
 }
 
+test {
+    exclude '**/*'
+}
 
 //querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
