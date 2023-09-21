@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Component
@@ -35,24 +37,12 @@ public class Utility {
         return StringUtils.isEmpty(value);
     }
 
-    public String getRandomString(int length) {
-        Random random = new Random();
-
-        return random.ints(leftLimit, rightLimit + 1)
-                .limit(length)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
-
-    public String getRandomKoreanString(int length) {
-        Random random = new Random();
-
-        return random.ints(leftLimit, rightLimit + 1)
-                .limit(length)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
-
+    /**
+     * toString 출력
+     *
+     * @param object
+     * @return
+     */
     public String toString(Object object) {
         String result = "";
 
@@ -65,7 +55,30 @@ public class Utility {
         return result;
     }
 
+    static public String dateToString(LocalDateTime localDateTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return localDateTime.format(dateTimeFormatter);
+    }
+
     static public String getEncodedPassword(String password) {
         return ("{bcrypt}" + password);
+    }
+
+    public String getRandomString(int length) {
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                     .limit(length)
+                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                     .toString();
+    }
+
+    public String getRandomKoreanString(int length) {
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                     .limit(length)
+                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                     .toString();
     }
 }
