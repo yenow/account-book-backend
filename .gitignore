@@ -37,21 +37,31 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### applicaition-yaml ###
+
 /src/main/resources/application-jwt.yaml
 /src/main/resources/application-local.yaml
 /src/main/resources/application-oauth.yaml
 /src/main/resources/application-ssl.yaml
+/src/main/resources/application-dev.yaml
+/src/main/resources/application-prod.yaml
 /keystore.p12
 
 ### docker ###
 /docker/*.out
 
-!**/docker/application/DockerFile
-
-/docker/database/initdb.d
-/docker/database/data
+/docker/database/docker-compose.yml
 !**/docker/database/conf.d/my.cnf
+!**/docker/database/initdb.d/create_table.sql
+!**/docker/database/initdb.d/load_data.sql
 
+/docker/jenkins/Dockerfile
+/docker/jenkins/docker-compose.yml
+
+/docker/server/Dockerfile
+/docker/server/docker-compose.yml
 
 ### .env ###
 **/.env
+
