@@ -1,14 +1,14 @@
 version: "1"
 
 services:
-  database:
+  prod-database:
     image:          mariadb:10.8.3
-    container_name: accountBookDevDatabase
+    container_name: accountBookProdDatabase
     ports:
-      - 3308:3306
+      - 3307:3306
     volumes:
       - ./database/conf.d:/etc/mysql/conf.d
-      - ${HOME_PATH}/data/docker/develop/mariadb:/var/lib/mysql
+      - ${HOME_PATH}/data/docker/production/mariadb:/var/lib/mysql
       - ./database/initdb.d/create_table.sql:/docker-entrypoint-initdb.d/1.sql
       - ./database/initdb.d/load_data.sql:/docker-entrypoint-initdb.d/2.sql
     env_file:       database/.env
@@ -16,48 +16,43 @@ services:
       - "TZ=Asia/Seoul"
       - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
     networks:
-      - accountBookDevNetworks
+      - accountBookProdNetworks
     restart:        always
 
-  jenkins:
+  prod-jenkins:
     build:
-      context:    ../
-      dockerfile: ./docker/jenkins/Dockerfile
-    container_name: accountBookDevJenkins
+      dockerfile: ./jenkins/Dockerfile
+    container_name: accountBookProdJenkins
     user:           root
     privileged:     true
     ports:
-      - 9090:8080 # jenkins 접속 port
-      - 50000:50000 # jenkins agent를 통해 통신 할때
-      - 9022:22
+      - 8090:8080 # jenkins 접속 port
+      - 50001:50000 # jenkins agent를 통해 통신 할때
     volumes:
-      - ${HOME_PATH}/data/docker/develop/jenkins:/var/jenkins_home  # jenkins 설치 폴더
+      - ${HOME_PATH}/data/docker/production/jenkins:/var/jenkins_home  # jenkins 설치 폴더
       - ${HOME_PATH}/.ssh:/var/lib/jenkins/.ssh
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - TZ=Asia/Seoul # jenkins 시간
     networks:
-      - accountBookDevNetworks
+      - accountBookProdNetworks
     restart:        always
 
-  server:
+  prod-server:
     build:
-      context:    ../
-      dockerfile: ./docker/server/Dockerfile # 기존에 설정해둔 Dockerfile 을 지정히여 build 된 jar 파일을 container 에 올린다.
-    depends_on:
-      - database
+      dockerfile: ./server/Dockerfile # 기존에 설정해둔 Dockerfile 을 지정히여 build 된 jar 파일을 container 에 올린다.
     ports:
-      - 8082:8080
-      - 8022:22
+      - 8081:8080
+      - 2222:22
     volumes:
-      - ${HOME_PATH}/data/docker/develop/server:/home/serve
-    container_name: accountBookDevServer
+      - ${HOME_PATH}/data/docker/production/server:/home/serve
+    container_name: accountBookProdServer
     environment:
       TZ: Asia/Seoul
     networks:
-      - accountBookDevNetworks
+      - accountBookProdNetworks
     restart:        always # 컨테이너 재실행
-    tty: true   #
+    tty: true
 
 networks:
-  accountBookDevNetworks:
+  accountBookProdNetworks:
