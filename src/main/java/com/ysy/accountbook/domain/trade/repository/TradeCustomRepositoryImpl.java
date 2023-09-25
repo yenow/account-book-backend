@@ -1,7 +1,6 @@
 package com.ysy.accountbook.domain.trade.repository;
 
 import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
@@ -16,13 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.querydsl.core.types.Ops.DIV;
 
 @Slf4j
 @SuppressWarnings("SpellCheckingInspection")
@@ -41,7 +37,7 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
     /**
      * 사용자의 모든 거래 목록 조회
      *
-     * @param userId
+     * @param userId 사용자 ID
      */
     @Override
     public Optional<List<TradeDto>> findAllTradeByUserId(Long userId) {
@@ -56,7 +52,6 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
      * @param month       월(yyyyMM)
      * @param accountType 계정 분류(expense, income)
      * @param userId      사용자 아이디
-     * @return
      */
     @Override
     public Optional<List<ChartDto>> findChartData(String month,
@@ -76,22 +71,22 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
 
         List<ChartDto> chartDtoList = new ArrayList<>();
         ChartDto chartDto = ChartDto.builder()
-                                    .accountName("")
+                                    .accountName("데이터 없음")
                                     .amount(0L)
                                     .percent(1.0F)
                                     .build();
         chartDtoList.add(chartDto);
-        return Optional.ofNullable(chartDtoList);
+        return Optional.of(chartDtoList);
     }
 
     /**
      * 차트 데이터 조회
      *
-     * @param month
-     * @param userId
-     * @param accountType
+     * @param month 월
+     * @param userId 사용자 아이디
+     * @param accountType 카테고리 타입
      * @param sumAmount   금액 합계
-     * @return
+     * @return List<ChartDto>
      */
     private List<ChartDto> queryFindChartDto(String month,
                                              Long userId,
@@ -126,10 +121,9 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
     /**
      * 월 지출/수입 합계 금액 구하는 쿼리
      *
-     * @param month
-     * @param userId
-     * @param accountType
-     * @return
+     * @param month 월
+     * @param userId 사용자 아이디
+     * @param accountType 계정 타입
      */
     private Long queryFindSumAmount(String month,
                                     Long userId,
@@ -155,8 +149,7 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
     /**
      * 유저의 모든 거래 목록 조회하는 쿼리
      *
-     * @param userId
-     * @return
+     * @param userId 사용자 ID
      */
     private List<TradeDto> queryFindAllTradeByUser(Long userId) {
         return jqf.select(Projections.fields(TradeDto.class,
