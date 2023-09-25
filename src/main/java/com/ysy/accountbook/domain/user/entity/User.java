@@ -24,9 +24,8 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @UniqueElements
     @Comment("이메일")
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     private String email;
     @Comment("이름")
     @Column(length = 100)
