@@ -7,11 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtil {
-
-    //public String generateRefreshToken(CustomOAuth2User customOAuth2User) {
-    //    return "";
-    //}
-
     public String generateAccessToken(String refreshToken) {
         return "";
     }

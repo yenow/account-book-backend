@@ -82,8 +82,8 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
     /**
      * 차트 데이터 조회
      *
-     * @param month 월
-     * @param userId 사용자 아이디
+     * @param month       월
+     * @param userId      사용자 아이디
      * @param accountType 카테고리 타입
      * @param sumAmount   금액 합계
      * @return List<ChartDto>
@@ -121,8 +121,8 @@ public class TradeCustomRepositoryImpl implements TradeCustomRepository {
     /**
      * 월 지출/수입 합계 금액 구하는 쿼리
      *
-     * @param month 월
-     * @param userId 사용자 아이디
+     * @param month       월
+     * @param userId      사용자 아이디
      * @param accountType 계정 타입
      */
     private Long queryFindSumAmount(String month,

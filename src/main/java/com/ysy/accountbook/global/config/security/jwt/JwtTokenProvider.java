@@ -34,14 +34,12 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final String SECRET_KEY;
-    //private final String COOKIE_REFRESH_TOKEN_KEY;
     private final Long ACCESS_TOKEN_EXPIRE_LENGTH;
     private final Long REFRESH_TOKEN_EXPIRE_LENGTH;
     private final String AUTHORITIES_KEY = "role";
     private final String ISSUER;
     private final Key key;
     private final PasswordEncoder passwordEncoder;
-    //private final UserRepository userRepository;
 
     public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey,
                             @Value("${jwt.cookie-key}") String cookieKey,
