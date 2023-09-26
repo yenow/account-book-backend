@@ -423,3 +423,20 @@ begin
     set p_result = 'success';
 end;
 
+
+create
+    function convert_keyword(p_keyword varchar(200), language_type enum ('kr', 'en')) returns varchar(500)
+body :
+begin
+
+    declare exit handler for not found begin
+        return '';
+end;
+
+return (
+    select if(language_type = 'kr', kr, en)
+    from message
+    where keyword = p_keyword
+);
+
+end;
