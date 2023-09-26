@@ -52,6 +52,7 @@
                                    where t.user_id = :userId
                                      and a.account_type = 'asset'
                                      and a.level = 2
+                                     and td.is_delete = false
                                    group by a.account_id
                                    ) s1 on s1.account_id = ac.account_id
                          left join (
@@ -67,6 +68,7 @@
                                    where t.user_id = :userId
                                      and a.account_type = 'asset'
                                      and a.level = 2
+                                     and td.is_delete = false
                                    group by a.parent_account_id
                                    ) s2 on s2.parent_account_id = ac.account_id
                 group by ac.account_id, ac.path
